@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flodiary API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .nav a {
+            color: #764ba2;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav a:hover {
+            background: #764ba2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        h2 {
+            color: #764ba2;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #555;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        
+        .get { background: #28a745; color: white; }
+        .post { background: #007bff; color: white; }
+        .put { background: #ffc107; color: #212529; }
+        .delete { background: #dc3545; color: white; }
+        
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .schema-table th,
+        .schema-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .schema-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .schema-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .quick-start {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .quick-start h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .quick-start code {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .auth-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .auth-info strong {
+            color: #664d03;
+        }
+        
+        @media (max-width: 768px) {
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌸 Flodiary API</h1>
+            <p>Complete REST API for Period Tracking Application</p>
+            <span class="status-badge">✅ Live & Ready</span>
+        </div>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#quick-start">Quick Start</a></li>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#endpoints">Endpoints</a></li>
+                <li><a href="#database">Database</a></li>
+                <li><a href="#testing">Testing</a></li>
+            </ul>
+        </nav>
+
+        <div class="content" id="overview">
+            <h2>🎯 Overview</h2>
+            <p>Flodiary API is a comprehensive RESTful backend service designed specifically for menstrual cycle tracking applications. Built with Node.js and Express, it provides secure, scalable endpoints for user management, cycle tracking, symptom logging, and predictive analytics.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔐 Secure Authentication</h4>
+                    <p>JWT-based auth with bcrypt password hashing</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Cycle Analytics</h4>
+                    <p>Advanced statistics and trend analysis</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🤖 ML Predictions</h4>
+                    <p>Linear regression model trained on real cycle data</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 Daily Tracking</h4>
+                    <p>Detailed daily entries for symptoms and flow</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="quick-start">
+            <h2>🚀 Quick Start</h2>
+            <div class="quick-start">
+                <h3>Installation & Setup</h3>
+                <pre><code># Clone and install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env
+
+# Initialize database with sample data
+npm run seed
+
+# Start development server
+npm run dev</code></pre>
+            </div>
+            
+            <div class="auth-info">
+                <strong>🧪 Test Credentials:</strong><br>
+                Email: <code>jane@example.com</code><br>
+                Password: <code>password123</code>
+            </div>
+        </div>
+
+        <div class="content" id="authentication">
+            <h2>🔐 Authentication</h2>
+            <p>All endpoints (except auth and health) require JWT authentication via <code>Authorization: Bearer {token}</code> header.</p>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/signup</span>
+                <p>Register a new user account</p>
+                <pre><code>{
+  "firstName": "Jane",
+  "lastName": "Doe", 
+  "username": "janedoe",
+  "email": "jane@example.com",
+  "password": "password123"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/login</span>
+                <p>Authenticate user and get JWT token</p>
+                <pre><code>{
+  "email": "jane@example.com",
+  "password": "password123"
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="content" id="endpoints">
+            <h2>🛠 API Endpoints</h2>
+            
+            <h3>👤 User Management</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/users/profile</span>
+                <p>Get current user's profile information</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <span class="endpoint-path">/api/users/profile</span>
+                <p>Update user profile</p>
+                <pre><code>{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "username": "janesmith",
+  "email": "jane.smith@example.com"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <span class="endpoint-path">/api/users/password</span>
+                <p>Change user password</p>
+                <pre><code>{
+  "currentPassword": "oldpassword",
+  "newPassword": "newpassword123"
+}</code></pre>
+            </div>
+
+            <h3>🩸 Cycle Management</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/cycles</span>
+                <p>Create a new menstrual cycle entry</p>
+                <pre><code>{
+  "startDate": "2024-01-15",
+  "endDate": "2024-01-20",
+  "cycleLength": 28,
+  "periodLength": 5,
+  "symptoms": ["cramps", "fatigue", "bloating"],
+  "mood": "tired",
+  "notes": "Heavy first day"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/cycles</span>
+                <p>Get user's cycle history with pagination</p>
+                <p><strong>Query params:</strong> <code>limit</code>, <code>offset</code></p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/cycles/stats</span>
+                <p>Get comprehensive cycle statistics</p>
+                <pre><code>{
+  "stats": {
+    "totalCycles": 6,
+    "avgCycleLength": 28.5,
+    "avgPeriodLength": 4.2,
+    "firstCycleDate": "2024-01-15",
+    "lastCycleDate": "2024-06-10",
+    "recentSymptoms": {
+      "cramps": 3,
+      "fatigue": 2,
+      "bloating": 1
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/cycles/:id</span>
+                <p>Get specific cycle details</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <span class="endpoint-path">/api/cycles/:id</span>
+                <p>Update existing cycle</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="endpoint-path">/api/cycles/:id</span>
+                <p>Delete cycle entry</p>
+            </div>
+
+            <h3>📅 Daily Entries</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/cycles/daily</span>
+                <p>Create/update daily tracking entry</p>
+                <pre><code>{
+  "date": "2024-01-15",
+  "flow": "heavy",
+  "symptoms": ["cramps", "fatigue"],
+  "mood": 2,
+  "notes": "First day of period",
+  "isOvulation": false,
+  "temperature": 98.6
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/cycles/daily/:date</span>
+                <p>Get daily entry for specific date</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/cycles/daily</span>
+                <p>Get daily entries for date range</p>
+                <p><strong>Query params:</strong> <code>startDate</code>, <code>endDate</code></p>
+            </div>
+
+            <h3>🤖 ML Predictions & Analytics</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/prediction/predict</span>
+                <p>Generate ML-powered cycle predictions using trained linear regression model</p>
+                <pre><code>{
+  "prediction": {
+    "predictedCycleLength": 28.3,
+    "confidence": 87,
+    "dataPoints": 6,
+    "method": "machine_learning",
+    "modelType": "Linear Regression",
+    "nextPeriod": {
+      "startDate": "2024-02-12",
+      "endDate": "2024-02-16", 
+      "daysUntilStart": 14,
+      "estimatedLength": 5
+    },
+    "ovulation": {
+      "date": "2024-01-29",
+      "fertileWindowStart": "2024-01-24",
+      "fertileWindowEnd": "2024-01-30"
+    },
+    "features": {
+      "previousCycle": 29,
+      "cycleAverage": 28.1,
+      "variance": 2.3
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/prediction/insights</span>
+                <p>Get personalized cycle insights and recommendations</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/prediction/health</span>
+                <p>Health check for prediction service</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/prediction/model-info</span>
+                <p>Get ML model technical information and training details</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/prediction/setup-complete</span>
+                <p>Trigger ML predictions after initial cycle setup completion</p>
+                <pre><code>{
+  "setupComplete": true,
+  "message": "Setup complete! Your personalized AI predictions are ready.",
+  "prediction": { /* ML prediction object */ },
+  "insights": {
+    "averageCycleLength": 28.3,
+    "variability": 2.1,
+    "regularity": "Regular",
+    "recommendations": [
+      "Continue tracking for even better predictions",
+      "Log daily symptoms and flow for detailed insights"
+    ]
+  }
+}</code></pre>
+            </div>
+
+            <h3>🏥 System</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/health</span>
+                <p>API health status check</p>
+                <pre><code>{
+  "status": "ok",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "service": "flodiary-api"
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="content" id="database">
+            <h2>🗄 Database Schema</h2>
+            <p>Flodiary uses SQLite for data persistence with the following schema:</p>
+            
+            <h3>Users Table</h3>
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>id</td>
+                        <td>INTEGER PRIMARY KEY</td>
+                        <td>Auto-incrementing user ID</td>
+                    </tr>
+                    <tr>
+                        <td>firstName</td>
+                        <td>TEXT NOT NULL</td>
+                        <td>User's first name</td>
+                    </tr>
+                    <tr>
+                        <td>lastName</td>
+                        <td>TEXT NOT NULL</td>
+                        <td>User's last name</td>
+                    </tr>
+                    <tr>
+                        <td>username</td>
+                        <td>TEXT UNIQUE NOT NULL</td>
+                        <td>Unique username</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>TEXT UNIQUE NOT NULL</td>
+                        <td>Unique email address</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>TEXT NOT NULL</td>
+                        <td>Bcrypt hashed password</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>DATETIME</td>
+                        <td>Account creation timestamp</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Cycles Table</h3>
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>id</td>
+                        <td>INTEGER PRIMARY KEY</td>
+                        <td>Auto-incrementing cycle ID</td>
+                    </tr>
+                    <tr>
+                        <td>userId</td>
+                        <td>INTEGER NOT NULL</td>
+                        <td>Foreign key to users table</td>
+                    </tr>
+                    <tr>
+                        <td>startDate</td>
+                        <td>DATE NOT NULL</td>
+                        <td>Period start date</td>
+                    </tr>
+                    <tr>
+                        <td>endDate</td>
+                        <td>DATE</td>
+                        <td>Period end date</td>
+                    </tr>
+                    <tr>
+                        <td>cycleLength</td>
+                        <td>INTEGER</td>
+                        <td>Total cycle length in days</td>
+                    </tr>
+                    <tr>
+                        <td>periodLength</td>
+                        <td>INTEGER</td>
+                        <td>Period length in days</td>
+                    </tr>
+                    <tr>
+                        <td>symptoms</td>
+                        <td>TEXT</td>
+                        <td>JSON array of symptoms</td>
+                    </tr>
+                    <tr>
+                        <td>mood</td>
+                        <td>TEXT</td>
+                        <td>Overall mood description</td>
+                    </tr>
+                    <tr>
+                        <td>notes</td>
+                        <td>TEXT</td>
+                        <td>User notes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Daily Entries Table</h3>
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>id</td>
+                        <td>INTEGER PRIMARY KEY</td>
+                        <td>Auto-incrementing entry ID</td>
+                    </tr>
+                    <tr>
+                        <td>userId</td>
+                        <td>INTEGER NOT NULL</td>
+                        <td>Foreign key to users table</td>
+                    </tr>
+                    <tr>
+                        <td>date</td>
+                        <td>DATE NOT NULL</td>
+                        <td>Entry date (unique per user)</td>
+                    </tr>
+                    <tr>
+                        <td>flow</td>
+                        <td>TEXT</td>
+                        <td>Flow intensity: none, spotting, light, medium, heavy</td>
+                    </tr>
+                    <tr>
+                        <td>symptoms</td>
+                        <td>TEXT</td>
+                        <td>JSON array of daily symptoms</td>
+                    </tr>
+                    <tr>
+                        <td>mood</td>
+                        <td>INTEGER</td>
+                        <td>Mood scale 1-5 (1=very bad, 5=excellent)</td>
+                    </tr>
+                    <tr>
+                        <td>notes</td>
+                        <td>TEXT</td>
+                        <td>Daily notes</td>
+                    </tr>
+                    <tr>
+                        <td>isOvulation</td>
+                        <td>BOOLEAN</td>
+                        <td>Ovulation day marker</td>
+                    </tr>
+                    <tr>
+                        <td>temperature</td>
+                        <td>REAL</td>
+                        <td>Basal body temperature</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="content" id="testing">
+            <h2>🧪 Testing the API</h2>
+            <p>Here are some example requests to test the API functionality:</p>
+
+            <h3>1. Health Check</h3>
+            <pre><code>curl http://localhost:3001/api/health</code></pre>
+
+            <h3>2. User Registration</h3>
+            <pre><code>curl -X POST http://localhost:3001/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Test",
+    "lastName": "User",
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "password123"
+  }'</code></pre>
+
+            <h3>3. User Login</h3>
+            <pre><code>curl -X POST http://localhost:3001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "password": "password123"
+  }'</code></pre>
+
+            <h3>4. Get Cycles (with auth)</h3>
+            <pre><code>curl -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  http://localhost:3001/api/cycles</code></pre>
+
+            <h3>5. Add New Cycle</h3>
+            <pre><code>curl -X POST http://localhost:3001/api/cycles \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": "2024-01-15",
+    "endDate": "2024-01-20",
+    "cycleLength": 28,
+    "periodLength": 5,
+    "symptoms": ["cramps", "fatigue"],
+    "mood": "tired",
+    "notes": "New cycle entry"
+  }'</code></pre>
+
+            <div class="auth-info">
+                <strong>💡 Pro Tip:</strong> Use tools like Postman, Insomnia, or Thunder Client (VS Code) for easier API testing with a graphical interface.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🌸 <strong>Flodiary API</strong> - Empowering women's health through technology</p>
+            <p>Built with ❤️ using Node.js, Express, SQLite, and modern security practices</p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add copy functionality to code blocks
+        document.querySelectorAll('pre code').forEach(block => {
+            block.addEventListener('click', function() {
+                navigator.clipboard.writeText(block.textContent);
+                
+                // Visual feedback
+                const originalBg = block.parentElement.style.background;
+                block.parentElement.style.background = '#28a745';
+                setTimeout(() => {
+                    block.parentElement.style.background = originalBg;
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
